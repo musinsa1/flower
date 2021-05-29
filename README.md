@@ -105,7 +105,7 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 
 ## 헥사고날 아키텍처 다이어그램 도출
 
-![image](https://user-images.githubusercontent.com/74900977/118951124-c9182300-b995-11eb-8b4d-9107d3dcf501.png)
+![hexa](https://user-images.githubusercontent.com/84487181/120078613-342acd80-c0eb-11eb-8564-01b1f8bb0dc6.png)
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
     - 호출관계에서 PubSub 과 Req/Resp 를 구분함
