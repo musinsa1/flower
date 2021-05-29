@@ -1,0 +1,10 @@
+flower\AbstractEvent$1.class
+flower\ProductController.class
+flower\ProductRegistered.class
+flower\ProductRepository.class
+flower\config\kafka\KafkaProcessor.class
+flower\PolicyHandler.class
+flower\StockModified.class
+flower\Product.class
+flower\ProductApplication.class
+flower\AbstractEvent.class
