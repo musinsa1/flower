@@ -9,7 +9,7 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 
 # Table of contents
 
-- [예제 - SirenOrder](#---)
+- [FlowerDelivery](#---)
   - [서비스 시나리오](#서비스-시나리오)
   - [분석/설계](#분석설계)
     - [Event Storming 결과](#Event-Storming-결과)
