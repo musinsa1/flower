@@ -281,68 +281,58 @@ http POST http://localhost:8082/orders customerId=101 productId=101   #Success
 - 이를 위하여 주문이 접수된 후에 곧바로 주문 접수 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
  
 ```
-package coffee;
+package flower;
 
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
 
 @Entity
-@DynamicInsert
-@Table(name = "Order_table")
+@Table(name="Order_table")
 public class Order {
 
- ...
-     @PostPersist
-    public void onPostPersist() throws Exception {
+@Id
+@GeneratedValue(strategy=GenerationType.AUTO)
+private Long id;
+private String productId;
+private Integer qty;
+private String status;
 
-        Integer price = OrderApplication.applicationContext.getBean(coffee.external.ProductService.class)
-                .checkProductStatus(this.getProductId());
+@PostPersist
+public void onPostPersist(){
+    boolean rslt = OrderApplication.applicationContext.getBean(flower.external.ProductService.class)
+    .checkAndModifyStock(this.getProductId(), this.getQty());
 
-        if (price > 0) {
-            boolean result = OrderApplication.applicationContext.getBean(coffee.external.CustomerService.class)
-                    .checkAndModifyPoint(this.getCustomerId(), price);
-
-            if (result) {
-
-                Ordered ordered = new Ordered();
-                BeanUtils.copyProperties(this, ordered);
-                ordered.publishAfterCommit();
-
-            } else
-                throw new Exception("Customer Point - Exception Raised");
-        } else
-            throw new Exception("Product Sold Out - Exception Raised");
+    if (rslt) {
+        Ordered ordered = new Ordered();
+        BeanUtils.copyProperties(this, ordered);
+        ordered.publishAfterCommit();
     }
-
 }
 ```
 - 배송 서비스에서는 주문 상태 접수 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
 
 ```
-package coffee;
+package flower;
 ...
 
 @Service
-public class PolicyHandler {
+public class PolicyHandler{
 
     @Autowired
     DeliveryRepository deliveryRepository;
 
     @StreamListener(KafkaProcessor.INPUT)
-    public void wheneverOrdered_WaitOrder(@Payload Ordered ordered) {
+    public void wheneverOrdered_StartDelivery(@Payload Ordered ordered){
 
-        if (ordered.isMe()) {
-            System.out.println("##### listener WaitOrder : " + ordered.toJson());
-
+        if(ordered.isMe()){
+            // do, Biz Logics..
             Delivery delivery = new Delivery();
             delivery.setOrderId(ordered.getId());
-            delivery.setStatus("Waited");
+            delivery.setStatus("DeliveryStarted");
 
             deliveryRepository.save(delivery);
-
-        }
+        }            
     }
-
 }
 
 ```
