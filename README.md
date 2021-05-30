@@ -65,7 +65,7 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 
 ### 바운디드 컨텍스트
 
-![image](https://user-images.githubusercontent.com/74900977/118925812-4df54380-b97a-11eb-9591-a924fe52e9e0.png)
+![bounded_context](https://user-images.githubusercontent.com/84487181/120095268-0af85480-c160-11eb-8e57-499ab925c9cd.PNG)
 
     - 도메인 서열 분리 
         - Core Domain:  Customer, Order, Product, Delivery : 없어서는 안될 핵심 서비스이며, 연견 Up-time SLA 수준을 99.999% 목표, 배포주기 : 1주일 1회 미만, Delivery 1개월 1회 미만
@@ -73,7 +73,7 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 
 ### 완성된 1차 모형
 
-![image](https://user-images.githubusercontent.com/74900977/118931820-581b4000-b982-11eb-963a-a47b5f014844.png)
+![1st_finish](https://user-images.githubusercontent.com/84487181/120095294-25cac900-c160-11eb-809a-ae05db92b446.PNG)
 
 
 ### 기능적 요구사항을 커버하는지 검증
