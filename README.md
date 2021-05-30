@@ -39,13 +39,13 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 
 [ 비기능적 요구사항 ]
 1. 트랜잭션
-    1. 판매가 가능한 상품 정보만 주문 메뉴에 노출한다  Sync 호출 
+    1. 재고 수량을 확인하여 판매가능한 정보만 주문 메뉴에 노출한다  Sync 호출 
 1. 장애격리
     1. Delivery 서비스가 중단되더라도 주문은 365일 24시간 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
     1. 주문이 완료된 상품이 Delivery 서비스가 과중되더라도 주문 완료 정보를 Delivery 서비스가 정상화 된 이후에 수신한다 Circuit breaker, fallback
 1. 성능
     1. 상점 주인은 Report 서비스를 통해서 주문/매출 정보를 확인할 수 있어야 한다  CQRS
-    1. 주문 접수 상태가 바뀔때마다 고객에게 알림을 줄 수 있어야 한다  Event driven
+    1. 배달상태가 바뀔때마다 알림을 줄 수 있어야 한다 Event driven
 
 
 # 분석/설계
@@ -68,7 +68,7 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 ![bounded_context](https://user-images.githubusercontent.com/84487181/120095268-0af85480-c160-11eb-8e57-499ab925c9cd.PNG)
 
     - 도메인 서열 분리 
-        - Core Domain:  Customer, Order, Product, Delivery : 없어서는 안될 핵심 서비스이며, 연견 Up-time SLA 수준을 99.999% 목표, 배포주기 : 1주일 1회 미만, Delivery 1개월 1회 미만
+        - Core Domain:  Order, Product, Delivery : 없어서는 안될 핵심 서비스이며, 연견 Up-time SLA 수준을 99.999% 목표, 배포주기 : 1주일 1회 미만, Delivery 1개월 1회 미만
         - Supporting Domain: Report : 경쟁력을 내기위한 서비스이며, SLA 수준은 연간 60% 이상 uptime 목표, 배포주기 : 1주일 1회 이상을 기준 ( 각팀 배포 주기 Policy 적용 )
 
 ### 완성된 1차 모형
@@ -80,14 +80,13 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 
 ![2nd_finish](https://user-images.githubusercontent.com/84487181/120096367-033bae80-c166-11eb-9c72-5bb35bdeb089.png)
 
-    - 고객이 회원 가입을 한다 (ok)
-    - 신규 회원 가입을 한 고객에게 포인트를 적립해 준다(OK)
-    - 고객이 주문하기 전에 주문 가능한 상품 메뉴를 선택한다 (ok)
-    - 고객이 선택한 메뉴에 대해서 주문을 한다 (ok)
-    - 주문이 되면 주문 내역이 Delivery 서비스에 전달되고, 고객 포인트를 적립한다 (ok)
-    - 접수된 주문은 Wating 상태로 접수가 되고, 고객한테 접수 대기 번호를 발송한다 ( ok )
-    - 주문한 상품이 완료되면 고객한테 상품 주문 완료를 전달한다 ( OK )
-    - 상점 주인에게 주문/매출 정보를 조회할수 있는 Report 서비스를 제공한다 ( OK )
+    - 고객이 주문을 하면 주문 정보를 바탕으로 배송이 시작된다. (ok)   
+    - 주문은 상품 재고 수량을 초과하여 발생될 수 없다. (ok)
+    - 고객이 주문취소를 하게 되면 주문정보는 삭제되나, 배송팀에서는 취소된 주문건을 별도의 저장소에 저장한다. (ok)
+    - 주문팀의 주문 취소는 반드시 배송 취소장부 등록이 선행되어야 한다. (ok)
+    - 주문과 배송 서비스는 게이트웨이를 통해 고객과 통신한다. (ok)
+    - 고객은 주문 서비스를 통해 배송현황 정보를 열람할 수 있어야 한다. (ok)
+    - Report 서비스를 통해 모든 서비스의 진행 내용을 통합 제공한다. (ok) 
 
 
 ### 비기능 요구사항에 대한 검증
@@ -113,19 +112,16 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 
 # 구현:
 
-분석/설계 단계에서 도출된 헥사고날 아키텍처에 따라, 각 BC별로 대변되는 마이크로 서비스들을 스프링부트로 구현하였다. 구현한 각 서비스를 로컬에서 실행하는 방법은 아래와 같다 (각자의 포트넘버는 8081 ~ 8085 이다)
+분석/설계 단계에서 도출된 헥사고날 아키텍처에 따라, 각 BC별로 대변되는 마이크로 서비스들을 스프링부트로 구현하였다. 구현한 각 서비스를 로컬에서 실행하는 방법은 아래와 같다 (각자의 포트넘버는 8081 ~ 8084 이다)
 
 ```
-cd customer
-mvn spring-boot:run
-
 cd order
 mvn spring-boot:run 
 
-cd product
+cd delivery
 mvn spring-boot:run  
 
-cd delivery
+cd product
 mvn spring-boot:run  
 
 cd report
