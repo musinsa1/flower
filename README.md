@@ -132,33 +132,26 @@ mvn spring-boot:run
 
 - 각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다.
 ```
-package coffee;
+package flower;
 
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
 
 @Entity
-@Table(name = "Delivery_table")
+@Table(name="Delivery_table")
 public class Delivery {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     private Long orderId;
     private String status;
 
     @PostPersist
-    public void onPostPersist() {
-        OrderWaited orderWaited = new OrderWaited();
-        BeanUtils.copyProperties(this, orderWaited);
-        orderWaited.publishAfterCommit();
-    }
-
-    @PostUpdate
-    public void onPostUpdate() {
-        StatusUpdated statusUpdated = new StatusUpdated();
-        BeanUtils.copyProperties(this, statusUpdated);
-        statusUpdated.publishAfterCommit();
+    public void onPostPersist(){
+        DeliveryStarted deliveryStarted = new DeliveryStarted();
+        BeanUtils.copyProperties(this, deliveryStarted);
+        deliveryStarted.publishAfterCommit();
     }
 
     public Long getId() {
@@ -168,7 +161,6 @@ public class Delivery {
     public void setId(Long id) {
         this.id = id;
     }
-
     public Long getOrderId() {
         return orderId;
     }
@@ -176,7 +168,6 @@ public class Delivery {
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
-
     public String getStatus() {
         return status;
     }
@@ -187,15 +178,15 @@ public class Delivery {
 }
 
 
+
 ```
 - Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 다양한 데이터소스 유형 (RDB or NoSQL) 에 대한 별도의 처리가 없도록 데이터 접근 어댑터를 자동 생성하기 위하여 Spring Data REST 의 RestRepository 를 적용하였다
 ```
-package coffee;
+package flower;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface OrderRepository extends PagingAndSortingRepository<Order, Long> {
-    public int countByStatus(String status);
+public interface OrderRepository extends PagingAndSortingRepository<Order, Long>{
 }
 ```
 - 적용 후 REST API 의 테스트
@@ -217,48 +208,54 @@ http GET http://ac4ff02e7969e44afbe64ede4b2441ac-1979746227.ap-northeast-2.elb.a
 
 분석단계에서의 조건 중 하나로 주문(order)->고객(customer) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. 
 
-- 고객 서비스를 호출하기 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
+- 상품 서비스를 호출하기 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
 
 ```
-package coffee.external;
+package flower.external;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "customer", url = "${feign.client.url.customerUrl}")
-public interface CustomerService {
+@FeignClient(name="product", url="http://localhost:8084")
+public interface ProductService {
 
-    @RequestMapping(method = RequestMethod.GET, path = "/customers/checkAndModifyPoint")
-    public boolean checkAndModifyPoint(@RequestParam("customerId") Long customerId,
-            @RequestParam("price") Integer price);
+    @RequestMapping(method= RequestMethod.GET, path="/checkAndModifyStock")
+    public boolean checkAndModifyStock(@RequestParam("productId") String productId, 
+                                        @RequestParam("qty") int qty);
 
 }
 ```
 
-- 주문 받은 즉시 고객 포인트를 차감하도록 구현
+- 주문 받은 즉시 재고 수량을 차감하도록 구현
 ```
-@RequestMapping(value = "/checkAndModifyPoint", method = RequestMethod.GET)
-  public boolean checkAndModifyPoint(@RequestParam("customerId") Long customerId, @RequestParam("price") Integer price) throws Exception {
-          System.out.println("##### /customer/checkAndModifyPoint  called #####");
+@RequestMapping(value = "/checkAndModifyStock",
+        method = RequestMethod.GET,
+        produces = "application/json;charset=UTF-8")
 
-          boolean result = false;
+public boolean checkAndModifyStock(@RequestParam("productId") Long productId,
+                                @RequestParam("qty") int qty)
+        throws Exception {
+                boolean status = false;
+                Optional<Product> productOptional = productRepository.findByProductId(productId);
+                Product product = productOptional.get();
 
-          Optional<Customer> customerOptional = customerRepository.findById(customerId);
-          Customer customer = customerOptional.get();
-          if (customer.getCustomerPoint() >= price) {
-                  result = true;
-                  customer.setCustomerPoint(customer.getCustomerPoint() - price);
-                  customerRepository.save(customer);
-          }
+                if(product.getStock() >= qty) {
+                        product.setStock(product.getStock() - qty);
+                        status = true;
 
-          return result;
-  }
+                        productRepository.save(product);
+                }
+
+                return status;
+        }
+
+ }
 ```
 
 - 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 고객 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
-
 
 ```
 # 고객 (customer) 서비스를 잠시 내려놓음 (ctrl+c, replicas 0 으로 설정)
