@@ -55,7 +55,7 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 
 
 ### 이벤트 도출
-![image](https://user-images.githubusercontent.com/74900977/118924080-8ba49d00-b977-11eb-82f2-4db4f4be71fa.png)
+![이벤트6개](https://user-images.githubusercontent.com/84487181/120094129-7ab71100-c159-11eb-9c1f-5bc48c88f353.PNG)
 
 ### 부적격 이벤트 탈락
 ![image](https://user-images.githubusercontent.com/74900977/118924474-1ab1b500-b978-11eb-8dd3-9fcd7a003a13.png)
