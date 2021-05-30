@@ -78,7 +78,7 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 
 ### 기능적 요구사항을 커버하는지 검증
 
-![image](https://user-images.githubusercontent.com/74900977/118940019-425e4880-b98b-11eb-85ce-16375ba40f1e.png)
+![2nd_finish](https://user-images.githubusercontent.com/84487181/120096367-033bae80-c166-11eb-9c72-5bb35bdeb089.png)
 
     - 고객이 회원 가입을 한다 (ok)
     - 신규 회원 가입을 한 고객에게 포인트를 적립해 준다(OK)
@@ -92,7 +92,7 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 
 ### 비기능 요구사항에 대한 검증
 
-![image](https://user-images.githubusercontent.com/74900977/118941404-a6cdd780-b98c-11eb-9d26-a17a83a5c9ee.png)
+![3rd_finish](https://user-images.githubusercontent.com/84487181/120096379-1189ca80-c166-11eb-9928-578ee31c1244.png)
 
     - 마이크로 서비스를 넘나드는 시나리오에 대한 트랜잭션 처리
     - 판매 가능 상품 :  판매가 가능한 상품만 주문 메뉴에 노출됨 , ACID 트랜잭션, Request-Response 방식 처리
