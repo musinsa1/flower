@@ -192,16 +192,13 @@ public interface OrderRepository extends PagingAndSortingRepository<Order, Long>
 - 적용 후 REST API 의 테스트
 ```
 # 주문 처리
-http POST http://localhost:8082/orders customerId=100 productId=100
-http POST http://ac4ff02e7969e44afbe64ede4b2441ac-1979746227.ap-northeast-2.elb.amazonaws.com:8080/orders customerId=100 productId=100
+http POST http://localhost:8081/orders productId=1000 qty=30
 
 # 배달 완료 처리
-http PATCH http://localhost:8084/deliveries/1 status=Completed
-http PATCH http://ac4ff02e7969e44afbe64ede4b2441ac-1979746227.ap-northeast-2.elb.amazonaws.com:8080/deliveries/1 status=Completed
+http PATCH http://localhost:8082/deliveries/1 status="Delivery Completed"
 
 # 주문 상태 확인
 http GET http://localhost:8082/orders/1
-http GET http://ac4ff02e7969e44afbe64ede4b2441ac-1979746227.ap-northeast-2.elb.amazonaws.com:8080/orders/1
 ```
 
 ## 동기식 호출 과 Fallback 처리
