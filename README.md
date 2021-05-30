@@ -51,7 +51,7 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 # 분석/설계
 
 ## Event Storming 결과
-* MSAEz 로 모델링한 이벤트스토밍 결과:  http://www.msaez.io/#/storming/f2NszwGXcITtKN4MrX4BrDurru12/share/99c158ed8a4d29f04a25679ea2240382
+* MSAEz 로 모델링한 이벤트스토밍 결과:  http://www.msaez.io/#/storming/zx6kKm2e0QdKBjE5esDfrhfkbI92/mine/728f1cc39869f7b8c3cf60ca22bf40c1
 
 
 ### 이벤트 도출
