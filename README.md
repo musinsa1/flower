@@ -254,19 +254,19 @@ public boolean checkAndModifyStock(@RequestParam("productId") Long productId,
 - 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 고객 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
 
 ```
-# 고객 (customer) 서비스를 잠시 내려놓음 (ctrl+c, replicas 0 으로 설정)
+# 상품 (product) 서비스를 잠시 내려놓음 (ctrl+c, replicas 0 으로 설정)
 
 #주문처리 
-http POST http://localhost:8082/orders customerId=100 productId=100   #Fail
-http POST http://localhost:8082/orders customerId=101 productId=101   #Fail
+http POST http://localhost:8081/orders productId=1000 qty=30   #Fail
+http POST http://localhost:8081/orders productId=2000 qty=30   #Fail
 
-#고객서비스 재기동
-cd 결제
+#상품서비스 재기동
+cd 상품
 mvn spring-boot:run
 
 #주문처리
-http POST http://localhost:8082/orders customerId=100 productId=100   #Success
-http POST http://localhost:8082/orders customerId=101 productId=101   #Success
+http POST http://localhost:8081/orders productId=1000 qty=30   #Success
+http POST http://localhost:8081/orders productId=2000 qty=30   #Success
 ```
 
 
@@ -338,17 +338,17 @@ public class PolicyHandler{
 # 배송 서비스 (delivery) 를 잠시 내려놓음 (ctrl+c)
 
 #주문처리
-http POST http://localhost:8082/orders customerId=100 productId=100   #Success
+http POST http://localhost:8081/orders productId=1000 qty=30   #Success
 
 #주문상태 확인
-http GET http://localhost:8082/orders/1     # 주문상태 Ordered 확인
+http GET http://localhost:8081/orders/1     # 주문상태 Ordered 확인
 
 #배송 서비스 기동
 cd delivery
 mvn spring-boot:run
 
 #주문상태 확인
-http GET localhost:8082/orders/1     # 주문 상태 Waited로 변경 확인
+http GET localhost:8081/orders/1     # 주문 상태 Waited로 변경 확인
 ```
 
 
