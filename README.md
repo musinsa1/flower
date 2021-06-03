@@ -77,6 +77,12 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 ![1st_finish](https://user-images.githubusercontent.com/84487181/120095294-25cac900-c160-11eb-809a-ae05db92b446.PNG)
 
 
+     고객이 시스템에 주문을 하면 재고의 수량을 확인하여 리턴을 받고 주문 이벤트가 발생합니다. 
+    주문정보를 기반으로 배송시스템에서는 비즈니스 로직을 처리한 후에 배송과 관련된 노티를 발행하고, 
+    주문서비스는 배송상태를 제공하기 위해 정보를 현행화해야합니다. 
+     생성한 주문은 취소할 수 있으며, 주문이 취소되기 전에는 배송시스템의 두번째 장부에 등록을 하고 배송취소가 가능합니다.
+
+
 ### 기능적 요구사항을 커버하는지 검증
 
 ![2nd_finish](https://user-images.githubusercontent.com/84487181/120096367-033bae80-c166-11eb-9c72-5bb35bdeb089.png)
