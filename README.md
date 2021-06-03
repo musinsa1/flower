@@ -251,7 +251,7 @@ public boolean checkAndModifyStock(@RequestParam("productId") Long productId,
  }
 ```
 
-- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 고객 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
+- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 상품 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
 
 ```
 # 상품 (product) 서비스를 잠시 내려놓음 (ctrl+c, replicas 0 으로 설정)
