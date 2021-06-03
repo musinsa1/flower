@@ -122,10 +122,10 @@ mvn spring-boot:run
 cd delivery
 mvn spring-boot:run  
 
-cd product
+cd report
 mvn spring-boot:run  
 
-cd report
+cd product
 mvn spring-boot:run  
 ```
 
