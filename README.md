@@ -348,7 +348,7 @@ cd delivery
 mvn spring-boot:run
 
 #주문상태 확인
-http GET localhost:8081/orders/1     # 주문 상태 Waited로 변경 확인
+http GET http://localhost:8081/orders/1     # 주문 상태 DeliveryStarted로 변경 확인
 ```
 
 
