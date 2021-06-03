@@ -197,7 +197,7 @@ http POST http://localhost:8081/orders productId=1000 qty=30
 http PATCH http://localhost:8082/deliveries/1 status="Delivery Completed"
 
 # 주문 상태 확인
-http GET http://localhost:8082/orders/1
+http GET http://localhost:8081/orders/1
 ```
 
 ## 동기식 호출 과 Fallback 처리
