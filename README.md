@@ -341,7 +341,7 @@ public class PolicyHandler{
 http POST http://localhost:8081/orders productId=1000 qty=30   #Success
 
 #주문상태 확인
-http GET http://localhost:8081/orders/1     # 주문상태 Ordered 확인
+http GET http://localhost:8081/orders/1     # 주문상태 안바뀜 확인
 
 #배송 서비스 기동
 cd delivery
