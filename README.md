@@ -208,8 +208,7 @@ http GET http://localhost:8081/orders/1
 
 분석단계에서의 조건 중 하나로 주문(order)->상품(product) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. 
 
-- 상품 서비스를 호출하기 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
-
+- Order 서비스에서 Product 서비스로 요청을 보
 ```
 package flower.external;
 
@@ -277,7 +276,7 @@ http POST http://localhost:8081/orders productId=2000 qty=30   #Success
 
 ## 비동기식 호출 publish-subscribe
 
-주문이 완료된 후, 배송 시스템에게 이를 알려주는 행위는 동기식이 아닌 비동기식으로 처리한다.
+주문이 완료된 후, 배송 시스템에게 이를 알려주는 방식은 비동기식으로 처리한다.
 - 이를 위하여 주문이 접수된 후에 곧바로 주문 접수 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
  
 ```
