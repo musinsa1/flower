@@ -94,7 +94,7 @@ FlowerDelivery 서비스를 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/�
 
     - 마이크로 서비스를 넘나드는 시나리오에 대한 트랜잭션 처리
     - 판매 가능 상품 :  판매가 가능한 상품만 주문 메뉴에 노출됨, ACID 트랜잭션, Request-Response 방식 처리
-    - 주문 완료시 상품 접수 및 Delivery:  Order 서비스에서 Delivery 마이크로서비스로 주문요청이 전달되는 과정에 있어서 Delivery 마이크로 서비스가 별도의 배포주기를 가지기 때문에 Eventual Consistency 방식으로 트랜잭션 처리함.
+    - 주문 완료시 상품 접수 및 Delivery:  Order 서비스에서 Delivery 서비스로 주문요청이 전달되는 과정에 있어서 Delivery 서비스가 별도의 배포주기를 가지기 때문에 Eventual Consistency 방식으로 트랜잭션 처리함.
     - Product, Report MicroService 트랜잭션:  주문 접수 상태, 상품 준비 상태 등 모든 이벤트에 대해 Kafka를 통한 Async 방식 처리, 데이터 일관성의 시점이 크리티컬하지 않은 모든 경우가 대부분이라 판단, Eventual Consistency 를 기본으로 채택함.
 
 
